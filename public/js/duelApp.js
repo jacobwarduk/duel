@@ -21,6 +21,7 @@ app.factory('people', ['$http', function($http) {
 // Main controller
 app.controller('MainCtrl', [
   '$scope',
+  'people',
   function($scope, people) {
 
     $scope.people = people.people;  // Binding the scope variable to the array in the service
@@ -50,7 +51,12 @@ app.config([
     $stateProvider.state('home', {
       url: '/home',
       templateUrl: '/home.html',
-      controller: 'MainCtrl'
+      controller: 'MainCtrl',
+      resolve: {
+        personPromise: ['people', function(people) {
+          return people.getAll();
+        }]
+      }
     });
 
     $urlRouterProvider.otherwise('home');
