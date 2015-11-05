@@ -1,10 +1,20 @@
 var app = angular.module('duelApp', ['ui.router']);
 
 // Service for people
-app.factory('people', [function() {
+app.factory('people', ['$http', function($http) {
+
+  // Initialising people object with array
   var o = {
     people: []
   };
+
+  // Method to retieve all people
+  o.getAll = function () {
+    return $http.get('/people').success(function(data) {
+      angular.copy(data, o.people);
+    });
+  };
+
   return o;
 }]);
 
