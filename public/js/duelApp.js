@@ -18,6 +18,64 @@ app.factory('people', ['$http', function($http) {
   return o;
 }]);
 
+// Service for authentication
+app.factory('auth', ['$http', '$window', function($http, $window) {
+  var auth = {};
+
+  // Method to save token
+  auth.saveToken = function(token) {
+    $window.localStorage['friend-finder-token'] = token;
+  };
+
+  // Method to retrieve token
+  auth.getToken = function() {
+    return $window.localStorage['friend-finder-token'];
+  };
+
+  // Method to register a new person
+  auth.register = function(person) {
+    return $http.opst('/register', person).success(function(data) {
+      auth.saveToken(data.token);
+    });
+  };
+
+  // Method to log in an existing person
+  auth.logIn = function(person) {
+    return $http.post('/login', person).success(function(data) {
+      auth.saveToken(data.token);
+    });
+  };
+
+  // Method to log out a logged in person
+  auth.logOut = function() {
+    $window.localStorage.removeItem('friend-finder-token');
+  };
+
+  // Method to check a person is logged in
+  auth.isLoggedIn = function() {
+    var token = auth.getToken();
+
+    if (token) {
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+      return payload.exp > Date.now() / 1000;
+    } else {
+      return false;
+    }
+  };
+
+  // Method to retrieve a logged in person's username from the token's payload
+  auth.currentUser = function() {
+    if (auth.isLoggedIn()) {
+      var token = auth.getToken();
+      var payload = JSON.parse($window.atob(token.split('.')[1]));
+
+      return payload.username;
+    }
+  };
+
+  return auth;
+}]);
+
 // Main controller
 app.controller('MainCtrl', [
   '$scope',
