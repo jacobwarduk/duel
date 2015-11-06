@@ -8,8 +8,11 @@ var PersonSchema = new mongoose.Schema({
   hash: String,
   salt: String,
   email: {type: String, lowercase: true, unique: true},
-  fullname: String,
-  friends: [{type: mongoose.Schema.Types.ObjectId, ref: 'Person'}]
+  firstName: String,
+  lastName: String,
+  friends: [{type: mongoose.Schema.Types.ObjectId, ref: 'Person'}],
+  reqIn: [{type: mongoose.Schema.Types.ObjectId, ref: 'Person'}],
+  reqOut: [{type: mongoose.Schema.Types.ObjectId, ref: 'Person'}]
 });
 
 // Schema method to set password
@@ -20,8 +23,8 @@ PersonSchema.methods.setPassword = function(password) {
 
 // Schema method to validate password
 PersonSchema.methods.validPassword = function(password) {
-  var hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64).toString('hex');
-  return this.hash === hash;
+    var hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64).toString('hex');
+    return this.hash === hash;
 };
 
 // Schema method to generate web token for 30 days

@@ -29,16 +29,17 @@ app.controller('MainCtrl', [
 
     $scope.addPerson = function() {
       // Checking all values are present
-      if (!$scope.username || $scope.username === '' || !$scope.password || $scope.password === '' || !$scope.email || $scope.email === '' || !$scope.fullname || $scope.fullname ==='' ) {
-        return;
-      }
-      // Adding a new person to the people array
-      $scope.people.push({
-        username: $scope.username,
-        password: $scope.password,
-        email: $scope.email,
-        fullname: $scope.fullname
-      });
+      // if (!$scope.username || $scope.username === '' || !$scope.password || $scope.password === '' || !$scope.email || $scope.email === '' || !$scope.firstName || $scope.firstName ==='' || !$scope.lastName || $scope.lastName ==='') {
+      //   return;
+      // }
+      // // Adding a new person to the people array
+      // $scope.people.push({
+      //   username: $scope.username,
+      //   password: $scope.password,
+      //   email: $scope.email,
+      //   firstName: $scope.firstName,
+      //   lastName: $scope.lastName
+      // });
     }
   }
 ]);
