@@ -34,7 +34,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 
   // Method to register a new person
   auth.register = function(person) {
-    return $http.opst('/register', person).success(function(data) {
+    return $http.post('/register', person).success(function(data) {
       auth.saveToken(data.token);
     });
   };
@@ -81,26 +81,49 @@ app.controller('MainCtrl', [
   '$scope',
   'people',
   function($scope, people) {
-
     $scope.people = people.people;  // Binding the scope variable to the array in the service
-
-
-    $scope.addPerson = function() {
-      // Checking all values are present
-      // if (!$scope.username || $scope.username === '' || !$scope.password || $scope.password === '' || !$scope.email || $scope.email === '' || !$scope.firstName || $scope.firstName ==='' || !$scope.lastName || $scope.lastName ==='') {
-      //   return;
-      // }
-      // // Adding a new person to the people array
-      // $scope.people.push({
-      //   username: $scope.username,
-      //   password: $scope.password,
-      //   email: $scope.email,
-      //   firstName: $scope.firstName,
-      //   lastName: $scope.lastName
-      // });
-    }
   }
 ]);
+
+// Authentication controller
+app.controller('AuthCtrl', [
+  '$scope',
+  '$state',
+  'auth',
+  function($scope, $state, auth) {
+
+    $scope.person = {};
+
+    // Method to register new person
+    $scope.register = function() {
+      auth.register($scope.person).error(function(error) {
+        $scope.error = error;
+      }).then(function() {
+        $state.go('home');
+      });
+    };
+
+    // Method to log in an existing person
+    $scope.logIn = function() {
+      auth.logIn($scope.person).error(function(error) {
+        $scope.error = error;
+      }).then(function() {
+        $state.go('home');
+      });
+    };
+
+  }
+]);
+
+// Navigation menu controller
+app.controller('NavCtrl', [
+  '$scope',
+  'auth',
+  function($scope, auth){
+    $scope.isLoggedIn = auth.isLoggedIn;
+    $scope.currentUser = auth.currentUser;
+    $scope.logOut = auth.logOut;
+}]);
 
 // Configuring the homepage state
 app.config([

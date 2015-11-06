@@ -3,16 +3,47 @@
     <title><%= title %></title>
 
     <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 
     <script src="/libs/angular/angular.min.js"></script>
     <script src="/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/libs/jquery/dist/jquery.min.js"></script>
+    <script src="/libs/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/js/duelApp.js"></script>
   </head>
 
   <body ng-app="duelApp">
 
     <div class="container-fluid">
+
+      <nav class="navbar navbar-default" ng-controller="NavCtrl">
+        <div class="container-fluid">
+
+          <div class="navbar-header">
+
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#friend-finder-menu" aria-expanded="false">
+              <i class="fa fa-bars"></i>
+            </button>
+
+            <a class="navbar-brand"><i class="fa fa-users"></i> <%= title %></a>
+
+          </div>
+
+          <div class="collapse navbar-collapse" id="friend-finder-menu">
+            <ul class="nav navbar-nav pull-right">
+              <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-search"></i> Find Friends</a></li>
+              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-users"></i> View Friends</a></li>
+              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-bullhorn"></i> View Requests</a></li>
+              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-cog"></i> My Profile</a></li>
+              <li ng-show="isLoggedIn()"><a href="#" ng-click="logOut()"><i class="fa fa-sign-out"></i> Log Out</a></li>
+              <li ng-hide="isLoggedIn()"><a href="#" data-toggle="modal" data-target="#login-register-modal"><i class="fa fa-sign-in"></i> Register or Log in</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </nav>
 
 
       <div class="row">
@@ -21,30 +52,72 @@
         </div>
       </div>
 
-      <!-- Homepage template -->
-      <script type="text/ng-template" id="/home.html">
-        <div class="page-header">
-          <h1><%= title %></h1>
-        </div>
+      <div class="modal fade" id="login-register-modal" tabindex="1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" ng-controller="AuthCtrl">
 
-        <div class="col-xs-7 col-xs-offset-1">
-          <div class="people-header">
-            <h3>Find New Friends</h3>
-          </div>
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+              <h4 class="modal-title" id="login-register-title">Please register or log in</h4>
+            </div>
 
-          <div ng-repeat="person in people | orderBy: 'username'" class="available-people">
-            {{person.username}} - {{person.firstName}} {{person.lastName}}
+            <div class="modal-body" ng-controller="AuthCtrl">
+              <div class="row">
+
+                <div class="col-xs-12 col-sm-6">
+                  <div class="container-fluid">
+                    <h5>Log in</h5>
+
+                    <form ng-submit="logIn()">
+
+                      <div class="row">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Username" ng-model="person.username" required="required" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="form-group">
+                          <input type="password" class="form-control" placeholder="Password" ng-model="person.password" required="required" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="alert alert-danger" ng-show="error">
+                          <span>{{error.message}}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Log in</button>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+
+
+
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
-      <div class="col-xs-3">
-        <div class="friends-header">
-          <h3>Friends List</h3>
-        </div>
 
-        <div ng-repeat="friend in friends | orderBy: 'username'" class="friends-list">
-          {{friend.username}}
+      <!-- Homepage template -->
+      <script type="text/ng-template" id="/home.html">
+
+        <div class="col-xs-12">
+          <div class="recent-people-header">
+            <h3>Recently added people</h3>
+          </div>
+
+          <div ng-repeat="person in people | orderBy: 'created_at': true" class="available-people-list">
+            <a href="#" ng-click="addFriend()" title="Add Friend"><i class="fa fa-user-plus green"></i></a> <b>{{person.firstName}} {{person.lastName}}</b> ({{person.username}})
+          </div>
         </div>
       </div>
 
