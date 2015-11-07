@@ -34,8 +34,8 @@ app.factory('people', ['$http', function($http) {
 //
 //   // Method to retrieve all friends
 //   friends.getAll = function () {
-//     return $http.get('/friends').success(function(data) {
-//       angular.copy(data, f.people.friends);
+//     return $http.get('/friends/' + id).then(function(res) {
+//       return res.data;
 //     });
 //   };
 //
@@ -153,8 +153,10 @@ app.controller('PeopleCtrl', [
   '$scope',
   'people',
   'person',
-  function($scope, people, person) {
+  'auth',
+  function($scope, people, person, auth) {
     $scope.person = person;
+    $scope.currentUser = auth.currentUser;
   }
 ]);
 

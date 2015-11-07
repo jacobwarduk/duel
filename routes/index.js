@@ -25,7 +25,7 @@ router.param('person', function(req, res, next, id) {
 });
 
 // Route to get a person
-router.get('/people/:person', function(req, res) {
+router.get('/people/:person', function(req, res, next) {
   res.json(req.person);
 });
 
@@ -37,6 +37,16 @@ router.get('/people', function(req, res, next) {
     }
     res.json(people);
   });
+});
+
+// Route to get a person's friends
+router.get('/friends/:person', function(req, res) {
+  res.json(req.person.friends);
+});
+
+// Route to add a new friend
+router.post('/friends/add/:person', function(req, res, next) {
+
 });
 
 // Route to register new people
@@ -60,6 +70,27 @@ router.post('/register', function(req, res, next) {
 
       return res.json({token: person.generateJWT()});
     });
+});
+
+// Route to update person's details
+router.put('/update/:person', function(req, res, next) {
+  Person.findById(req.person._id, function(err, data) {
+    if (err) {
+      res.send(err);
+    }
+
+    data.username = req.body.username;
+    data.email = req.body.email;
+    data.firstName = req.body.firstName;
+    data.lastName = req.body.lastName;
+
+    data.save(function(err) {
+      if (err) {
+        res.send(err);
+      }
+      res.json({message: 'Successfully updated details.'});
+    });
+  });
 });
 
 // Authenticating JWT tokens

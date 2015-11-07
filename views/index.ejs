@@ -26,17 +26,16 @@
               <i class="fa fa-bars"></i>
             </button>
 
-            <a class="navbar-brand"><i class="fa fa-users"></i> <%= title %></a>
+            <a href="#/home" class="navbar-brand"><i class="fa fa-users"></i> <%= title %></a>
 
           </div>
 
           <div class="collapse navbar-collapse" id="friend-finder-menu">
             <ul class="nav navbar-nav pull-right">
-              <li ng-show="isLoggedIn()"><a>{{ currentUser().username }}</a></li>
               <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-search"></i> Find Friends</a></li>
-              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-users"></i> View Friends</a></li>
-              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-bullhorn"></i> View Requests</a></li>
-              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-cog"></i> My Profile</a></li>
+              <!-- <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-users"></i> View Friends</a></li> -->
+              <!-- <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-bullhorn"></i> View Requests</a></li> -->
+              <li ng-show="isLoggedIn()"><a href="#/people/{{ currentUser()._id }}" ng-click=""><i class="fa fa-cog"></i> My Profile</a></li>
               <li ng-show="isLoggedIn()"><a href="#" ng-click="logOut()"><i class="fa fa-sign-out"></i> Log Out</a></li>
               <li ng-hide="isLoggedIn()"><a href="#" data-toggle="modal" data-target="#login-register-modal"><i class="fa fa-sign-in"></i> Register or Log in</a></li>
             </ul>
@@ -122,7 +121,10 @@
           </div>
 
           <div ng-repeat="person in people | orderBy: 'created_at': true" class="available-people-list">
-            <a href="#/people/{{person._id}}" ng-click="addFriend()" title="Add Friend"><i class="fa fa-user-plus green"></i></a> <b>{{person.firstName}} {{person.lastName}}</b> ({{person.username}})
+            <a ng-show="notFriend()" ng-click="addFriend()" title="Add Friend"><i class="fa fa-user-plus green"></i></a>
+            <a ng-show="isFriend()" ng-click="removeFriend()" title="Remove Friend"><i class="fa fa-user-times red"></i></a>
+            <!-- <a ng-show="pendingFriend()" ng-click="removeFriend()" title="Friend Request Pending"><i class="fa fa-user-times orange"></i></a> -->
+            <b><a href="#/people/{{person._id}}">{{person.firstName}} {{person.lastName}}</a></b> ({{person.username}})
           </div>
         </div>
 
@@ -137,7 +139,15 @@
         <div class="profile-page-header">
           <h3>{{person.firstName}} {{person.lastName}} ({{person.username}})</h3>
         </div>
-        {{people}}
+
+        <div ng-hide="person._id === currentUser()._id">
+          <a href="#" ng-click="addFriend()" title="Add Friend">Add Friend</a>
+        </div>
+
+        <div ng-show="person._id === currentUser()._id">
+          <a href="#" ng-click="editProfile()" title="Edit Profile">Edit Profile</a>
+        </div>
+
         <h4>Friends</h4>
 
         <div ng-repeat="friend in person.friends | orderBy: 'created_at': true" class="profile-friend-list">
