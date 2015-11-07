@@ -15,8 +15,31 @@ app.factory('people', ['$http', function($http) {
     });
   };
 
+  // Method to retrieve a single person
+  o.get = function(id) {
+    return $http.get('/people/' + id).then(function(res) {
+      return res.data;
+    });
+  };
+
   return o;
 }]);
+
+// Service for friendships
+// app.factory('friends', ['$http', funtion($http) {
+//   // Initialising friends object with array
+//   var f = {
+//     people.friends[];
+//   };
+//
+//   // Method to retrieve all friends
+//   friends.getAll = function () {
+//     return $http.get('/friends').success(function(data) {
+//       angular.copy(data, f.people.friends);
+//     });
+//   };
+//
+// }]);
 
 // Service for authentication
 app.factory('auth', ['$http', '$window', function($http, $window) {
@@ -69,7 +92,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
       var token = auth.getToken();
       var payload = JSON.parse($window.atob(token.split('.')[1]));
 
-      return payload.username;
+      return payload;
     }
   };
 
@@ -125,11 +148,23 @@ app.controller('NavCtrl', [
     $scope.logOut = auth.logOut;
 }]);
 
+// Profile page controller
+app.controller('PeopleCtrl', [
+  '$scope',
+  'people',
+  'person',
+  function($scope, people, person) {
+    $scope.person = person;
+  }
+]);
+
 // Configuring the homepage state
 app.config([
   '$stateProvider',
   '$urlRouterProvider',
   function($stateProvider, $urlRouterProvider) {
+
+    // URL routing for home page
     $stateProvider.state('home', {
       url: '/home',
       templateUrl: '/home.html',
@@ -141,6 +176,19 @@ app.config([
       }
     });
 
+    // URL routing for profile page
+    $stateProvider.state('people', {
+      url: '/people/{id}',
+      templateUrl: '/people.html',
+      controller: 'PeopleCtrl',
+      resolve: {
+        person: ['$stateParams', 'people', function($stateParams, people) {
+          return people.get($stateParams.id);
+        }]
+      }
+    });
+
+    // Redirecting to homepage
     $urlRouterProvider.otherwise('home');
   }
 ]);
