@@ -25,21 +25,35 @@ app.factory('people', ['$http', function($http) {
   return o;
 }]);
 
+// Service for updating a person's details
+app.factory('update', ['$http', function($http) {
+  var update = {};
+
+  // Method to update a person's details
+  update.newDetails = function(id) {
+    return $http.put('/update/' + id).then(function(res) {
+      return res.data;
+    });
+  };
+
+  return update;
+}]);
+
 // Service for friendships
-// app.factory('friends', ['$http', funtion($http) {
-//   // Initialising friends object with array
-//   var f = {
-//     people.friends[];
-//   };
-//
-//   // Method to retrieve all friends
-//   friends.getAll = function () {
-//     return $http.get('/friends/' + id).then(function(res) {
-//       return res.data;
-//     });
-//   };
-//
-// }]);
+app.factory('friends', ['$http', funtion($http) {
+  // Initialising friends object with array
+  var f = {
+    friends[];
+  };
+
+  // Method to retrieve all friends
+  friends.getAll = function () {
+    return $http.get('/friends/' + id).then(function(res) {
+      return res.data;
+    });
+  };
+
+}]);
 
 // Service for authentication
 app.factory('auth', ['$http', '$window', function($http, $window) {
@@ -58,6 +72,13 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   // Method to register a new person
   auth.register = function(person) {
     return $http.post('/register', person).success(function(data) {
+      auth.saveToken(data.token);
+    });
+  };
+
+  // Method to update a person's details
+  auth.update = function(person) {
+    return $http.put('/update' + person._id).success(function(data) {
       auth.saveToken(data.token);
     });
   };
@@ -98,6 +119,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
 
   return auth;
 }]);
+
 
 // Main controller
 app.controller('MainCtrl', [
@@ -160,6 +182,19 @@ app.controller('PeopleCtrl', [
   }
 ]);
 
+app.controller('UpdateCtrl', [
+  '$scope',
+  'update',
+  'people',
+  'person',
+  'auth',
+  function($scope, update, people, person, auth) {
+    $scope.person = person;
+    $scope.newDetails = update.newDetails;
+    $scope.currentUser = auth.currentUser;
+  }
+]);
+
 // Configuring the homepage state
 app.config([
   '$stateProvider',
@@ -183,6 +218,18 @@ app.config([
       url: '/people/{id}',
       templateUrl: '/people.html',
       controller: 'PeopleCtrl',
+      resolve: {
+        person: ['$stateParams', 'people', function($stateParams, people) {
+          return people.get($stateParams.id);
+        }]
+      }
+    });
+
+    // URL for routing update page
+    $stateProvider.state('auth', {
+      url: '/update/{id}',
+      templateUrl: '/update.html',
+      controller: 'AuthCtrl',
       resolve: {
         person: ['$stateParams', 'people', function($stateParams, people) {
           return people.get($stateParams.id);

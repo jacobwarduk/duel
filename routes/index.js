@@ -46,7 +46,7 @@ router.get('/friends/:person', function(req, res) {
 
 // Route to add a new friend
 router.post('/friends/add/:person', function(req, res, next) {
-
+  
 });
 
 // Route to register new people
@@ -74,20 +74,26 @@ router.post('/register', function(req, res, next) {
 
 // Route to update person's details
 router.put('/update/:person', function(req, res, next) {
-  Person.findById(req.person._id, function(err, data) {
+  Person.findById(req.person._id, function(err, person) {
     if (err) {
       res.send(err);
     }
 
-    data.username = req.body.username;
-    data.email = req.body.email;
-    data.firstName = req.body.firstName;
-    data.lastName = req.body.lastName;
+    person.username = req.body.username;
+    person.email = req.body.email;
+    person.firstName = req.body.firstName;
+    person.lastName = req.body.lastName;
 
-    data.save(function(err) {
+    person.save(function(err) {
       if (err) {
-        res.send(err);
+        return next(err);
       }
+
+      if (!person.username || person.username ==='' || !person.email || person.email === '' || !person.firstName || person.firstName === '' || !person.lastName || person.lastName === '') {
+        res.json({error: "All fields must be present."});
+        return;
+      }
+
       res.json({message: 'Successfully updated details.'});
     });
   });

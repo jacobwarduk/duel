@@ -41,7 +41,7 @@ Returns a JSON object of the person whose `_id` is specified.
 
 `curl /people/563cc6cce7b1db45b08b2af1`
 
-Success: `{"_id":"563cc6cce7b1db45b08b2af1","hash":"874342f41ec335e13ec2fbfa4aa406bbe4324e1a6b7acaf8679e1bb7ea3a29521ed8c018f339af69d5d0c93dcf028d54f775c4d936a8d6214416717132318658","salt":"1165172732a416e908d0e4618b0de397","__v":0,"email":"stan@example.com","firstName":"Stan","lastName":"Smith","username":"Stanley","reqOut":[],"reqIn":[],"friends":[]}`
+Response: `{"_id":"563cc6cce7b1db45b08b2af1","hash":"874342f41ec335e13ec2fbfa4aa406bbe4324e1a6b7acaf8679e1bb7ea3a29521ed8c018f339af69d5d0c93dcf028d54f775c4d936a8d6214416717132318658","salt":"1165172732a416e908d0e4618b0de397","__v":0,"email":"stan@example.com","firstName":"Stan","lastName":"Smith","username":"Stanley","reqOut":[],"reqIn":[],"friends":[]}`
 
 ---
 **GET /friends/:_id**
@@ -70,9 +70,7 @@ Accepts the fields:
 
 `curl --data 'username=Stan The Man&password=hello123&email=stan@example.com&firstName=Stan&lastName=Smith' /register`
 
-Success: `{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NjNjYzZjY2U3YjFkYjQ1YjA4YjJhZjEiLCJ1c2VybmFtZSI6IlN0YW5sZXkiLCJleHAiOjE0NDk0OTM5ODMsImlhdCI6MTQ0NjkwMTk4M30.j3sez7YJnwAqpKCcADniAKaPCWREfVhAX1EOnHr9FA0"}`
-
-Fail:
+Response: `{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NjNjYzZjY2U3YjFkYjQ1YjA4YjJhZjEiLCJ1c2VybmFtZSI6IlN0YW5sZXkiLCJleHAiOjE0NDk0OTM5ODMsImlhdCI6MTQ0NjkwMTk4M30.j3sez7YJnwAqpKCcADniAKaPCWREfVhAX1EOnHr9FA0"}`
 
 ---
 **POST /login**
@@ -87,9 +85,7 @@ Accepts the fields:
 
 `curl --data 'username=Stan The Man&password=hello123' /login`
 
-Success: `{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NjNjYzZjY2U3YjFkYjQ1YjA4YjJhZjEiLCJ1c2VybmFtZSI6IlN0YW5sZXkiLCJleHAiOjE0NDk0OTM5ODMsImlhdCI6MTQ0NjkwMTk4M30.j3sez7YJnwAqpKCcADniAKaPCWREfVhAX1EOnHr9FA0"}`
-
-Fail: `{"message":"Could not find a user with that username."}`
+Response: `{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NjNjYzZjY2U3YjFkYjQ1YjA4YjJhZjEiLCJ1c2VybmFtZSI6IlN0YW5sZXkiLCJleHAiOjE0NDk0OTM5ODMsImlhdCI6MTQ0NjkwMTk4M30.j3sez7YJnwAqpKCcADniAKaPCWREfVhAX1EOnHr9FA0"}`
 
 ---
 **POST /friends/add/:_id**
@@ -133,6 +129,7 @@ I ran out of time due to other unexpected commitments, but extra functionality s
  - Sending a friend request that the other person has to accept before you become mutual friends. (Started but not completed).
  - Proper SEO, including pretty URLs, #!, fragments, etc...
  - Nicer front end styling, instead of the default Bootstrap theme.
+ - Replace some scrappy jQuery with Angular directives.
  - Grunt tasks to concatenate and minify CSS and JS files.
  - More detailed documentation.
 

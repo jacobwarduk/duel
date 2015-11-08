@@ -11,6 +11,7 @@
     <script src="/libs/jquery/dist/jquery.min.js"></script>
     <script src="/libs/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/js/duelApp.js"></script>
+    <script src="/js/javascript.js"></script>
   </head>
 
   <body ng-app="duelApp">
@@ -32,12 +33,13 @@
 
           <div class="collapse navbar-collapse" id="friend-finder-menu">
             <ul class="nav navbar-nav pull-right">
-              <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-search"></i> Find Friends</a></li>
-              <!-- <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-users"></i> View Friends</a></li> -->
-              <!-- <li ng-show="isLoggedIn()"><a href="#" ng-click=""><i class="fa fa-bullhorn"></i> View Requests</a></li> -->
-              <li ng-show="isLoggedIn()"><a href="#/people/{{ currentUser()._id }}" ng-click=""><i class="fa fa-cog"></i> My Profile</a></li>
-              <li ng-show="isLoggedIn()"><a href="#" ng-click="logOut()"><i class="fa fa-sign-out"></i> Log Out</a></li>
-              <li ng-hide="isLoggedIn()"><a href="#" data-toggle="modal" data-target="#login-register-modal"><i class="fa fa-sign-in"></i> Register or Log in</a></li>
+              <li ng-show="isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse"><a href="#" ng-click=""><i class="fa fa-search"></i> Find Friends</a></li>
+              <!-- <li ng-show="isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse"><a href="#" ng-click=""><i class="fa fa-users"></i> View Friends</a></li> -->
+              <!-- <li ng-show="isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse"><a href="#" ng-click=""><i class="fa fa-bullhorn"></i> View Requests</a></li> -->
+              <li ng-show="isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse"><a href="#/people/{{ currentUser()._id }}" ng-click=""><i class="fa fa-cog"></i> My Profile</a></li>
+              <li ng-show="isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse"><a href="#/home" ng-click="logOut()"><i class="fa fa-sign-out"></i> Log Out</a></li>
+              <li ng-hide="isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse"><a href="#" data-toggle="modal" data-target="#register-modal"><i class="fa fa-user-plus"></i> Register</a></li>
+              <li ng-hide="isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse"><a href="#" data-toggle="modal" data-target="#login-modal"><i class="fa fa-sign-in"></i> Log in</a></li>
             </ul>
           </div>
 
@@ -51,13 +53,14 @@
         </div>
       </div>
 
-      <div class="modal fade" id="login-register-modal" tabindex="1" role="dialog">
+      <!-- Modal for logging in -->
+      <div class="modal fade" id="login-modal" tabindex="1" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content" ng-controller="AuthCtrl">
 
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
-              <h4 class="modal-title" id="login-register-title">Please register or log in</h4>
+              <h4 class="modal-title" id="login-title">Please log in</h4>
             </div>
 
             <div class="modal-body" ng-controller="AuthCtrl">
@@ -88,14 +91,82 @@
                       </div>
 
                       <div class="row">
-                        <div class="alert alert-success" ng-show="isLoggedIn()">
-                          <span>Welcome back {{person.username}}</span>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" onclick="$('#login-modal').modal('hide');" class="btn btn-primary">Log in</button>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Modal for registration -->
+      <div class="modal fade" id="register-modal" tabindex="1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" ng-controller="AuthCtrl">
+
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+              <h4 class="modal-title" id="register-title">Please register</h4>
+            </div>
+
+            <div class="modal-body" ng-controller="AuthCtrl">
+              <div class="row">
+
+                <div class="col-xs-12 col-sm-6">
+                  <div class="container-fluid">
+                    <h5>Register</h5>
+
+                    <form ng-submit="register()">
+
+                      <div class="row">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Username" ng-model="person.username" required="required" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="form-group">
+                          <input type="email" class="form-control" placeholder="Email" ng-model="person.email" required="required" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="First name" ng-model="person.firstName" required="required" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Last name" ng-model="person.lastName" required="required" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="form-group">
+                          <input type="password" class="form-control" placeholder="Password" ng-model="person.password" required="required" />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="alert alert-danger" ng-show="error">
+                          <span>{{error.message}}</span>
                         </div>
                       </div>
 
                       <div class="row">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Log in</button>
+                        <button type="submit" onclick="$('#register-modal').modal('hide');" class="btn btn-primary">Register</button>
                       </div>
 
                     </form>
@@ -145,7 +216,7 @@
         </div>
 
         <div ng-show="person._id === currentUser()._id">
-          <a href="#" ng-click="editProfile()" title="Edit Profile">Edit Profile</a>
+          <a href="#/update/{{ currentUser()._id }}" ng-click="" title="Edit Profile">Edit Profile</a>
         </div>
 
         <h4>Friends</h4>
@@ -154,6 +225,64 @@
           <a href="{{person.link}}">{{person.username}}</a>
         </div>
       </div>
+
+      </script>
+
+      <script type="text/ng-template" id="/update.html">
+
+        <div class="update-details-form col-xs-12" ng-show="person._id === currentUser()._id" ng-controller="UpdateCtrl">
+
+          <h3>Update Details</h3>
+
+          <form ng-submit="newDetails()">
+
+
+          {{person}}
+          {{currentUser()}}
+
+            <div class="row">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="First name" ng-model="person.firstName" value="{{person.firstName}}" required="required" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Last name" ng-model="person.lastName" value="{{person.lastName}}" required="required" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Username" ng-model="person.username" value="{{person.username}}" required="required" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email" value="{{person.email}}" ng-model="person.email" required="required" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" ng-model="person.password" required="required" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="alert alert-danger" ng-show="error">
+                <span>{{error.message}}</span>
+              </div>
+            </div>
+
+            <div class="row">
+              <button type="reset" class="btn btn-secondary">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update details</button>
+            </div>
+
+          </form>
+        </div>
 
       </script>
 
